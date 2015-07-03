@@ -20,3 +20,38 @@ https://trello.com/b/gcBOllH5/baby-moments-marina
 
 https://ameli.mybalsamiq.com/projects/marina-final/edit
 
+## Models
+
+* **User**
+  - id
+  - name
+  - email
+  - password
+
+* **Child**
+  - id
+  - userId
+  - name
+  - gender
+  - DOB
+  - TOB
+  - eye color
+  - photoUrl
+  
+* **Diary post**
+  - id
+  - userId
+  - title
+  - text
+  - photoUrl
+  - createdAt
+
+* **Photo**
+  - photoId
+  - userId
+  - url
+  - caption
+  - createdAt
+  - 
+
+

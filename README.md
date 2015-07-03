@@ -23,7 +23,7 @@ https://ameli.mybalsamiq.com/projects/marina-final/edit
 ## Models
 
 * **User**
-  - id
+  - id 
   - name
   - email
   - password
@@ -33,8 +33,8 @@ https://ameli.mybalsamiq.com/projects/marina-final/edit
   - userId
   - name
   - gender
-  - DOB
-  - TOB
+  - DOB / date
+  - TimeOB / time
   - eye color
   - photoUrl
   
@@ -44,14 +44,45 @@ https://ameli.mybalsamiq.com/projects/marina-final/edit
   - title
   - text
   - photoUrl
-  - createdAt
+  - createdAt /date
 
 * **Photo**
   - photoId
   - userId
   - url
+  - title
   - caption
+  - createdAt /date
+
+* **Video**
+  - videoId
+  - userId
+  - url
+  - title
+  - caption
+  - createdAt /date
+
+* **Weight**
+  - id
+  - userId
+  - weight /number
+  - age /number
+  - createdAt / date
+
+* **Height**
+  - id
+  - userId
+  - height /number
+  - age /number
   - createdAt
-  - 
+
+* **HealthNote**
+  - id
+  - userId
+  - title
+  - category
+  - body
+  - createdAt
+
 
 

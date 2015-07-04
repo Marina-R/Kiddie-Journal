@@ -25,7 +25,7 @@ https://ameli.mybalsamiq.com/projects/marina-final/edit
 * **User**
   - id 
   - name
-  - email
+  - email 
   - password
 
 * **Child**
@@ -47,7 +47,7 @@ https://ameli.mybalsamiq.com/projects/marina-final/edit
   - createdAt /date
 
 * **Photo**
-  - photoId
+  - id
   - userId
   - url
   - title
@@ -55,7 +55,7 @@ https://ameli.mybalsamiq.com/projects/marina-final/edit
   - createdAt /date
 
 * **Video**
-  - videoId
+  - id
   - userId
   - url
   - title
@@ -83,6 +83,14 @@ https://ameli.mybalsamiq.com/projects/marina-final/edit
   - category
   - body
   - createdAt
+  
+## APIs, Plugins, Libraries and Frameworks
+
+Facebook - LogIn
+TinyMCE 
+FullCalendar
+React-Modal
+D3
 
 
 

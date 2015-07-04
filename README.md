@@ -87,10 +87,15 @@ https://ameli.mybalsamiq.com/projects/marina-final/edit
 ## APIs, Plugins, Libraries and Frameworks
 
 Facebook - LogIn
+
 TinyMCE 
+
 FullCalendar
+
 React-Modal
+
 D3
+
 
 
 

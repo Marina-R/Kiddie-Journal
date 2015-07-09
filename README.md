@@ -36,7 +36,7 @@ https://ameli.mybalsamiq.com/projects/marina-final/edit
   - DOB / date
   - TimeOB / time
   - eye color
-  - photoUrl
+  - avatarUrl
   
 * **Diary post**
   - id
@@ -85,8 +85,6 @@ https://ameli.mybalsamiq.com/projects/marina-final/edit
   - createdAt
   
 ## APIs, Plugins, Libraries and Frameworks
-
-Facebook - LogIn
 
 TinyMCE 
 

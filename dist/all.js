@@ -33499,7 +33499,7 @@ module.exports = Backbone.Collection.extend({
 	parseClassName: '_User'
 });
 
-},{"../config/parse":168,"../models/UserModel":171,"backparse":3}],163:[function(require,module,exports){
+},{"../config/parse":169,"../models/UserModel":172,"backparse":3}],163:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -33508,6 +33508,7 @@ module.exports = React.createClass({
 	displayName: 'exports',
 
 	render: function render() {
+		console.log(this.props.user);
 		var nav = {
 			position: 'absolute',
 			background: 'grey',
@@ -33554,7 +33555,7 @@ module.exports = React.createClass({
 						null,
 						React.createElement(
 							'a',
-							null,
+							{ href: '#diary' },
 							'Diary',
 							React.createElement('span', null)
 						)
@@ -33564,7 +33565,7 @@ module.exports = React.createClass({
 						null,
 						React.createElement(
 							'a',
-							null,
+							{ href: '#gallery' },
 							'Gallery',
 							React.createElement('span', null)
 						)
@@ -33574,7 +33575,7 @@ module.exports = React.createClass({
 						null,
 						React.createElement(
 							'a',
-							null,
+							{ href: '#health' },
 							'Health Notes',
 							React.createElement('span', null)
 						)
@@ -33584,7 +33585,7 @@ module.exports = React.createClass({
 						null,
 						React.createElement(
 							'a',
-							null,
+							{ href: '#growth' },
 							'Growth',
 							React.createElement('span', null)
 						)
@@ -33594,7 +33595,7 @@ module.exports = React.createClass({
 						null,
 						React.createElement(
 							'a',
-							null,
+							{ href: '#profile' },
 							'Child Profile',
 							React.createElement('span', null)
 						)
@@ -33604,24 +33605,6 @@ module.exports = React.createClass({
 			React.createElement(
 				'div',
 				{ id: 'page-content-wrapper' },
-				React.createElement(
-					'nav',
-					{ className: 'navbar navbar-default', style: { opacity: '0.5' } },
-					React.createElement(
-						'div',
-						{ className: 'container-fluid' },
-						React.createElement(
-							'div',
-							{ className: 'navbar-header' },
-							React.createElement('div', { className: 'row col-12', style: line })
-						)
-					)
-				),
-				React.createElement(
-					'button',
-					{ type: 'button', style: logoutBtn, className: 'btn btn-default navbar-btn', onClick: this.logOut },
-					'Log out'
-				),
 				React.createElement(
 					'div',
 					{ className: 'page-content inset' },
@@ -33633,10 +33616,6 @@ module.exports = React.createClass({
 				)
 			)
 		);
-	},
-	logOut: function logOut() {
-		this.props.user.logout();
-		this.props.app.navigate('', { trigger: true });
 	}
 });
 
@@ -33944,11 +33923,6 @@ module.exports = React.createClass({
 					self.props.app.navigate('diary', { trigger: true });
 				},
 				error: function error(userModel, response) {
-					// if(response.responseJSON.code == 202) {
-					// 	error.username = 'Username ' + username + ' has already been taken';
-					// } else if(response.responseJSON.code == 203) {
-					// 	error.email = 'The email address ' + email + ' has already been taken';
-					// }
 					self.setState({ data: _error });
 				}
 			});
@@ -33970,10 +33944,27 @@ module.exports = React.createClass({
 	}
 });
 
-},{"../collections/UsersCollection":162,"../models/ChildModel":170,"react":160}],165:[function(require,module,exports){
-"use strict";
+},{"../collections/UsersCollection":162,"../models/ChildModel":171,"react":160}],165:[function(require,module,exports){
+'use strict';
 
-},{}],166:[function(require,module,exports){
+var React = require('react');
+var BasicComponent = require('./BasicComponent');
+var NavigationComponent = require('./NavigationComponent');
+
+module.exports = React.createClass({
+	displayName: 'exports',
+
+	render: function render() {
+		return React.createElement(
+			'div',
+			null,
+			React.createElement(BasicComponent, { user: this.props.user }),
+			React.createElement(NavigationComponent, { user: this.props.user, app: this.props.app })
+		);
+	}
+});
+
+},{"./BasicComponent":163,"./NavigationComponent":167,"react":160}],166:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -34094,15 +34085,6 @@ module.exports = React.createClass({
 		var username = this.refs.username.getDOMNode().value;
 		var password = this.refs.password.getDOMNode().value;
 
-		// if(!username && !password) {
-		// 	error.username = 'Please enter your email';
-		// 	error.password = 'Please enter your password';
-		// } else if(!password) {
-		// 	error.password = 'Please enter your password';
-		// } else if(!validator.isLength(password, 6)) {
-		// 	error.password = 'Password should be at least 6 characters length';
-		// }
-
 		this.setState({ data: error });
 
 		this.props.user.login({
@@ -34124,6 +34106,98 @@ module.exports = React.createClass({
 });
 
 },{"react":160,"validator":161}],167:[function(require,module,exports){
+'use strict';
+
+var React = require('react');
+
+module.exports = React.createClass({
+	displayName: 'exports',
+
+	render: function render() {
+		var logoutBtn = {
+			position: 'fixed',
+			top: 0,
+			right: '25px'
+		};
+		var navbar = {
+			marginLeft: '230px',
+			opacity: '0.5'
+		};
+		console.log(this.props.user);
+		return React.createElement(
+			'nav',
+			{ className: 'navbar navbar-default', style: navbar },
+			React.createElement(
+				'div',
+				{ className: 'container-fluid' },
+				React.createElement(
+					'div',
+					{ className: 'navbar-header' },
+					React.createElement(
+						'div',
+						{ className: 'collapse navbar-collapse' },
+						React.createElement(
+							'ul',
+							{ className: 'nav navbar-nav' },
+							React.createElement(
+								'li',
+								{ className: 'dropdown' },
+								React.createElement(
+									'ul',
+									{ className: 'nav nav-pills' },
+									React.createElement(
+										'li',
+										{ className: 'dropdown' },
+										React.createElement(
+											'a',
+											{ className: 'dropdown-toggle', 'data-toggle': 'dropdown', role: 'button', 'aria-haspopup': 'true', 'aria-expanded': 'false', onClick: this.dropdown },
+											this.props.user.attributes.name,
+											React.createElement('span', { className: 'caret' })
+										),
+										React.createElement(
+											'ul',
+											{ className: 'dropdown-menu', ref: 'dropdownMenu' },
+											React.createElement(
+												'li',
+												null,
+												React.createElement(
+													'a',
+													{ href: '#profile' },
+													'Child`s Profile'
+												)
+											),
+											React.createElement('li', { role: 'separator', className: 'divider' }),
+											React.createElement(
+												'li',
+												null,
+												React.createElement(
+													'a',
+													{ onClick: this.logOut },
+													'Log Out'
+												)
+											)
+										)
+									)
+								)
+							)
+						)
+					),
+					React.createElement(
+						'button',
+						{ type: 'button', style: logoutBtn, className: 'btn btn-default navbar-btn', onClick: this.logOut },
+						'Log out'
+					)
+				)
+			)
+		);
+	},
+	logOut: function logOut() {
+		this.props.user.logout();
+		this.props.app.navigate('', { trigger: true });
+	}
+});
+
+},{"react":160}],168:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -34317,7 +34391,7 @@ module.exports = React.createClass({
 	}
 });
 
-},{"react":160,"validator":161}],168:[function(require,module,exports){
+},{"react":160,"validator":161}],169:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -34326,7 +34400,7 @@ module.exports = {
 	apiVersion: 1
 };
 
-},{}],169:[function(require,module,exports){
+},{}],170:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -34340,6 +34414,7 @@ var LoginPageComponent = require('./components/LoginPageComponent');
 var ChildInfoPageComponent = require('./components/ChildInfoPageComponent');
 var DiaryPageComponent = require('./components/DiaryPageComponent');
 var BasicComponent = require('./components/BasicComponent');
+var NavigationComponent = require('./components/NavigationComponent');
 
 var UserModel = require('./models/UserModel');
 var ChildModel = require('./models/ChildModel');
@@ -34352,7 +34427,11 @@ var App = Backbone.Router.extend({
 		'': 'welcome',
 		'login': 'login',
 		'childInfo': 'childInfo',
-		'diary': 'diary'
+		'diary': 'diary',
+		'gallery': 'gallery',
+		'health': 'health',
+		'growth': 'growth',
+		'profile': 'profile'
 	},
 	welcome: function welcome() {
 		React.render(React.createElement(WelcomePageComponent, { user: user, app: app }), container);
@@ -34364,6 +34443,30 @@ var App = Backbone.Router.extend({
 		React.render(React.createElement(ChildInfoPageComponent, { child: child, user: user, app: app }), container);
 	},
 	diary: function diary() {
+		React.render(React.createElement(DiaryPageComponent, { user: user, app: app }), container
+		// <BasicComponent user={user} app={app} />,
+		// container
+		);
+	},
+	gallery: function gallery() {
+		React.render(
+		// <DiaryPageComponent app={app} />,
+		// container
+		React.createElement(BasicComponent, { user: user, app: app }), container);
+	},
+	health: function health() {
+		React.render(
+		// <DiaryPageComponent app={app} />,
+		// container
+		React.createElement(BasicComponent, { user: user, app: app }), container);
+	},
+	growth: function growth() {
+		React.render(
+		// <DiaryPageComponent app={app} />,
+		// container
+		React.createElement(BasicComponent, { user: user, app: app }), container);
+	},
+	profile: function profile() {
 		React.render(
 		// <DiaryPageComponent app={app} />,
 		// container
@@ -34374,7 +34477,7 @@ var App = Backbone.Router.extend({
 var app = new App();
 Backbone.history.start();
 
-},{"./components/BasicComponent":163,"./components/ChildInfoPageComponent":164,"./components/DiaryPageComponent":165,"./components/LoginPageComponent":166,"./components/WelcomePageComponent":167,"./config/parse.js":168,"./models/ChildModel":170,"./models/UserModel":171,"backparse":3,"react":160}],170:[function(require,module,exports){
+},{"./components/BasicComponent":163,"./components/ChildInfoPageComponent":164,"./components/DiaryPageComponent":165,"./components/LoginPageComponent":166,"./components/NavigationComponent":167,"./components/WelcomePageComponent":168,"./config/parse.js":169,"./models/ChildModel":171,"./models/UserModel":172,"backparse":3,"react":160}],171:[function(require,module,exports){
 'use strict';
 
 var parseSettings = require('../config/parse.js');
@@ -34396,7 +34499,7 @@ module.exports = Backbone.Model.extend({
 	idAttribute: 'objectId'
 });
 
-},{"../config/parse.js":168,"backparse":3}],171:[function(require,module,exports){
+},{"../config/parse.js":169,"backparse":3}],172:[function(require,module,exports){
 'use strict';
 
 var parseSettings = require('../config/parse.js');
@@ -34414,7 +34517,7 @@ module.exports = Backbone.Model.extend({
 	idAttribute: 'objectId'
 });
 
-},{"../config/parse.js":168,"backparse":3}]},{},[169])
+},{"../config/parse.js":169,"backparse":3}]},{},[170])
 
 
 //# sourceMappingURL=all.js.map

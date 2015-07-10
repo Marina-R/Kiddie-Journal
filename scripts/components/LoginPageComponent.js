@@ -81,15 +81,6 @@ module.exports = React.createClass({
 		var username = this.refs.username.getDOMNode().value;
 		var password = this.refs.password.getDOMNode().value;
 
-		// if(!username && !password) {
-		// 	error.username = 'Please enter your email';
-		// 	error.password = 'Please enter your password';
-		// } else if(!password) {
-		// 	error.password = 'Please enter your password';
-		// } else if(!validator.isLength(password, 6)) {
-		// 	error.password = 'Password should be at least 6 characters length';
-		// }
-
 		this.setState({data: error});
 		
 		this.props.user.login({

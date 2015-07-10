@@ -9,6 +9,7 @@ var LoginPageComponent = require('./components/LoginPageComponent');
 var ChildInfoPageComponent = require('./components/ChildInfoPageComponent');
 var DiaryPageComponent = require('./components/DiaryPageComponent');
 var BasicComponent = require('./components/BasicComponent');
+var NavigationComponent = require('./components/NavigationComponent');
 
 var UserModel = require('./models/UserModel');
 var ChildModel = require('./models/ChildModel');
@@ -21,7 +22,11 @@ var App = Backbone.Router.extend({
 		'': 'welcome',
 		'login': 'login',
 		'childInfo': 'childInfo',
-		'diary': 'diary'
+		'diary': 'diary',
+		'gallery': 'gallery',
+		'health': 'health',
+		'growth': 'growth',
+		'profile': 'profile'
 	},
 	welcome: function () {
 		React.render(
@@ -42,6 +47,38 @@ var App = Backbone.Router.extend({
 		)
 	},
 	diary: function () {
+		React.render(
+			<DiaryPageComponent user={user} app={app} />,
+			container
+			// <BasicComponent user={user} app={app} />,
+			// container
+		)
+	},
+	gallery: function () {
+		React.render(
+			// <DiaryPageComponent app={app} />,
+			// container
+			<BasicComponent user={user} app={app} />,
+			container
+		)
+	},
+	health: function () {
+		React.render(
+			// <DiaryPageComponent app={app} />,
+			// container
+			<BasicComponent user={user} app={app} />,
+			container
+		)
+	},
+	growth: function () {
+		React.render(
+			// <DiaryPageComponent app={app} />,
+			// container
+			<BasicComponent user={user} app={app} />,
+			container
+		)
+	},
+	profile: function () {
 		React.render(
 			// <DiaryPageComponent app={app} />,
 			// container

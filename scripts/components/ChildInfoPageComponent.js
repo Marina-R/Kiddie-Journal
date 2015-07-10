@@ -187,11 +187,6 @@ module.exports = React.createClass({
 					self.props.app.navigate('diary', {trigger: true});
 				},
 				error: function(userModel, response) {
-					// if(response.responseJSON.code == 202) {
-					// 	error.username = 'Username ' + username + ' has already been taken';
-					// } else if(response.responseJSON.code == 203) {
-					// 	error.email = 'The email address ' + email + ' has already been taken';
-					// }
 					self.setState({data: error});
 				}
 			})

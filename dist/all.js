@@ -33653,6 +33653,7 @@ module.exports = React.createClass({
 	componentWillMount: function componentWillMount() {
 		var users = new UsersCollection();
 		users.fetch();
+		console.log(users);
 	},
 	getInitialState: function getInitialState() {
 		return {
@@ -33681,7 +33682,7 @@ module.exports = React.createClass({
 		};
 		var form = {
 			backgroundColor: '#e4e1d3',
-			height: '450px',
+			height: '470px',
 			width: '450px',
 			padding: '40px'
 		};
@@ -33782,7 +33783,7 @@ module.exports = React.createClass({
 								React.createElement('input', { type: 'text', ref: 'childName', className: 'form-control', placeholder: 'Name' }),
 								React.createElement(
 									'div',
-									{ className: 'error', style: error, ref: 'nameError' },
+									{ className: 'error', style: error },
 									this.state.data.name
 								)
 							)
@@ -33817,7 +33818,7 @@ module.exports = React.createClass({
 									{ ref: 'gender', className: 'form-control' },
 									React.createElement(
 										'option',
-										{ selected: true },
+										{ value: '', selected: true },
 										'Choose gender'
 									),
 									React.createElement(
@@ -33833,7 +33834,7 @@ module.exports = React.createClass({
 								),
 								React.createElement(
 									'div',
-									{ className: 'error', style: error, ref: 'genderError' },
+									{ className: 'error', style: error },
 									this.state.data.gender
 								)
 							)
@@ -33852,7 +33853,7 @@ module.exports = React.createClass({
 								React.createElement('input', { type: 'date', ref: 'dob', className: 'form-control', placeholder: 'DOB' }),
 								React.createElement(
 									'div',
-									{ className: 'error', style: error, ref: 'dobError' },
+									{ className: 'error', style: error },
 									this.state.data.dob
 								)
 							)
@@ -33887,7 +33888,7 @@ module.exports = React.createClass({
 						),
 						React.createElement(
 							'div',
-							{ className: 'form-group', style: { marginTop: '40px' } },
+							{ className: 'form-group', style: { marginTop: '20px' } },
 							React.createElement(
 								'div',
 								{ className: 'col-xs-offset-3 col-xs-6' },
@@ -33903,11 +33904,18 @@ module.exports = React.createClass({
 			)
 		);
 	},
+	hasError: function hasError(error) {
+		for (var i in error) {
+			return true;
+		}
+		return false;
+	},
 	gotoDiary: function gotoDiary(e) {
 		e.preventDefault();
 		var self = this;
-		var child = new ChildModel({
-			userId: self.props.users.attributes.username,
+
+		var newChild = {
+			userId: self.props.user.attributes.username,
 			name: self.refs.childName.getDOMNode().value,
 			nickname: self.refs.nickname.getDOMNode().value,
 			gender: self.refs.gender.getDOMNode().value,
@@ -33915,9 +33923,36 @@ module.exports = React.createClass({
 			TOB: self.refs.tob.getDOMNode().value,
 			eyeColor: self.refs.eyeColor.getDOMNode().value,
 			avatarUrl: self.state.avatarUrl
-		});
+		};
+		console.log(self.props.user.attributes.username);
 
-		this.props.app.navigate('diary', { trigger: true });
+		var _error = {};
+
+		if (!newChild.name) {
+			_error.name = 'Please enter your child\'s name';
+		} else if (newChild.gender.length < 1) {
+			_error.gender = 'Please choose the gender';
+		} else if (!newChild.DOB) {
+			_error.dob = 'Please enter your chaild\'s date of birth';
+		}
+
+		this.setState({ data: _error });
+
+		if (!this.hasError(_error)) {
+			this.props.child.save(newChild, {
+				success: function success(userModel) {
+					self.props.app.navigate('diary', { trigger: true });
+				},
+				error: function error(userModel, response) {
+					// if(response.responseJSON.code == 202) {
+					// 	error.username = 'Username ' + username + ' has already been taken';
+					// } else if(response.responseJSON.code == 203) {
+					// 	error.email = 'The email address ' + email + ' has already been taken';
+					// }
+					self.setState({ data: _error });
+				}
+			});
+		}
 	},
 	uploadAvatar: function uploadAvatar() {
 		var self = this;
@@ -34068,14 +34103,14 @@ module.exports = React.createClass({
 		// 	error.password = 'Password should be at least 6 characters length';
 		// }
 
-		// this.setState({data: error});
+		this.setState({ data: error });
 
 		this.props.user.login({
 			username: this.refs.username.getDOMNode().value,
 			password: this.refs.password.getDOMNode().value
 		}, {
 			success: function success(userModel) {
-				app.navigate('', { trigger: true }); //need to change route
+				app.navigate('diary', { trigger: true });
 			},
 			error: function error(userModel, response) {
 				self.setState({
@@ -34307,8 +34342,10 @@ var DiaryPageComponent = require('./components/DiaryPageComponent');
 var BasicComponent = require('./components/BasicComponent');
 
 var UserModel = require('./models/UserModel');
+var ChildModel = require('./models/ChildModel');
 
 var user = new UserModel();
+var child = new ChildModel();
 
 var App = Backbone.Router.extend({
 	routes: {
@@ -34324,7 +34361,7 @@ var App = Backbone.Router.extend({
 		React.render(React.createElement(LoginPageComponent, { user: user, app: app }), container);
 	},
 	childInfo: function childInfo() {
-		React.render(React.createElement(ChildInfoPageComponent, { user: user, app: app }), container);
+		React.render(React.createElement(ChildInfoPageComponent, { child: child, user: user, app: app }), container);
 	},
 	diary: function diary() {
 		React.render(
@@ -34337,7 +34374,7 @@ var App = Backbone.Router.extend({
 var app = new App();
 Backbone.history.start();
 
-},{"./components/BasicComponent":163,"./components/ChildInfoPageComponent":164,"./components/DiaryPageComponent":165,"./components/LoginPageComponent":166,"./components/WelcomePageComponent":167,"./config/parse.js":168,"./models/UserModel":171,"backparse":3,"react":160}],170:[function(require,module,exports){
+},{"./components/BasicComponent":163,"./components/ChildInfoPageComponent":164,"./components/DiaryPageComponent":165,"./components/LoginPageComponent":166,"./components/WelcomePageComponent":167,"./config/parse.js":168,"./models/ChildModel":170,"./models/UserModel":171,"backparse":3,"react":160}],170:[function(require,module,exports){
 'use strict';
 
 var parseSettings = require('../config/parse.js');

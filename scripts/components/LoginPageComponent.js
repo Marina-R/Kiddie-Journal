@@ -61,7 +61,6 @@ module.exports = React.createClass({
 						</div>
 						<button type="submit" ref='loginBtn' className="btn btn-primary btn-lg btn-block form-btn">Log In</button>
 						<div> or <a href="#">Sign Up</a> now. Its free!</div>
-
 					</form>
 				</div>
 			</div>
@@ -91,14 +90,14 @@ module.exports = React.createClass({
 		// 	error.password = 'Password should be at least 6 characters length';
 		// }
 
-		// this.setState({data: error});
+		this.setState({data: error});
 		
 		this.props.user.login({
 			username: this.refs.username.getDOMNode().value,
 			password: this.refs.password.getDOMNode().value
 		}, {
 			success: function(userModel) {
-				app.navigate('', {trigger: true}); //need to change route
+				app.navigate('diary', {trigger: true}); 
 			},
 			error: function(userModel, response) {
 				self.setState({

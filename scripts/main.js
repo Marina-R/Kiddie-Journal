@@ -11,8 +11,10 @@ var DiaryPageComponent = require('./components/DiaryPageComponent');
 var BasicComponent = require('./components/BasicComponent');
 
 var UserModel = require('./models/UserModel');
+var ChildModel = require('./models/ChildModel');
 
 var user = new UserModel();
+var child = new ChildModel();
 
 var App = Backbone.Router.extend({
 	routes: {
@@ -35,7 +37,7 @@ var App = Backbone.Router.extend({
 	},
 	childInfo: function () {
 		React.render(
-			<ChildInfoPageComponent user={user} app={app} />,
+			<ChildInfoPageComponent child={child} user={user} app={app} />,
 			container
 		)
 	},

@@ -74,9 +74,11 @@
 }
 
 .sidebar-nav li a {
-	color: #999999;
+	color: #d1d1d1;
 	display: block;
 	text-decoration: none;
+	font-size: 18px;
+	font-family: 'CabinScetch';
 }
 
 .sidebar-nav li a:hover {

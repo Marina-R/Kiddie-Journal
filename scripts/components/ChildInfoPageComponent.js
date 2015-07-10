@@ -6,6 +6,7 @@ module.exports = React.createClass({
 	componentWillMount: function() {
 		var users = new UsersCollection();
 		users.fetch();
+		console.log(users);
 	},
 	getInitialState: function() {
 		return { 
@@ -34,7 +35,7 @@ module.exports = React.createClass({
 		};
 		var form = {
 			backgroundColor: '#e4e1d3',
-			height: '450px',
+			height: '470px',
 			width: '450px',
 			padding: '40px'
 		};
@@ -89,7 +90,7 @@ module.exports = React.createClass({
 								<label className='col-xs-6 control-label' style={labelStyle}>Child`s Name *</label>
 								<div className='col-xs-6'>
 									<input type="text" ref='childName' className="form-control" placeholder="Name" />
-									<div className='error' style={error} ref='nameError'>{this.state.data.name}</div>
+									<div className='error' style={error}>{this.state.data.name}</div>
 								</div>
 							</div>
 							
@@ -104,11 +105,11 @@ module.exports = React.createClass({
 								<label className='col-xs-6 control-label' style={labelStyle}>Gender *</label>
 								<div className='col-xs-6'>
 									<select ref='gender' className="form-control">
-										<option selected>Choose gender</option>
+										<option value='' selected>Choose gender</option>
 										<option value='girl'>Girl</option>
 										<option value='boy'>Boy</option>
 									</select>
-									<div className='error' style={error} ref='genderError'>{this.state.data.gender}</div>
+									<div className='error' style={error}>{this.state.data.gender}</div>
 								</div>
 							</div>
 
@@ -116,7 +117,7 @@ module.exports = React.createClass({
 								<label className='col-xs-6 control-label' style={labelStyle}>Date of Birth *</label>
 								<div className="col-xs-6">
 									<input type="date" ref='dob' className="form-control" placeholder='DOB' />
-									<div className='error' style={error} ref='dobError'>{this.state.data.dob}</div>
+									<div className='error' style={error}>{this.state.data.dob}</div>
 								</div>
 							</div>
 
@@ -134,7 +135,7 @@ module.exports = React.createClass({
 								</div>
 							</div>
 
-							<div className="form-group" style={{marginTop: '40px'}}>
+							<div className="form-group" style={{marginTop: '20px'}}>
 								<div className="col-xs-offset-3 col-xs-6">
 									<button type="submit" className="btn btn-danger btn-lg btn-block form-btn">Save and continue</button>
 								</div>
@@ -146,11 +147,18 @@ module.exports = React.createClass({
 			</div>
 		);
 	},
+	hasError: function(error) {
+		for(var i in error) {
+			return true;
+		}
+		return false;
+	},
 	gotoDiary: function(e) {
 		e.preventDefault();
 		var self = this;
-		var child = new ChildModel({
-			userId: self.props.users.attributes.username, 
+		
+		var newChild = {
+			userId: self.props.user.attributes.username, 
 			name: self.refs.childName.getDOMNode().value,
 			nickname: self.refs.nickname.getDOMNode().value,
 			gender: self.refs.gender.getDOMNode().value,
@@ -158,9 +166,36 @@ module.exports = React.createClass({
 			TOB: self.refs.tob.getDOMNode().value,
 			eyeColor: self.refs.eyeColor.getDOMNode().value,
 			avatarUrl: self.state.avatarUrl
-		});
+		};
+		console.log(self.props.user.attributes.username)
+		
+		var error = {};
 
-		this.props.app.navigate('diary', {trigger: true});
+		if(!newChild.name) {
+			error.name = 'Please enter your child\'s name';
+		} else if(newChild.gender.length < 1) {
+			error.gender = 'Please choose the gender';
+		} else if(!newChild.DOB) {
+			error.dob = 'Please enter your chaild\'s date of birth';
+		}  
+
+		this.setState({data: error});
+
+		if(!this.hasError(error)){
+			this.props.child.save(newChild, {
+				success: function(userModel) {
+					self.props.app.navigate('diary', {trigger: true});
+				},
+				error: function(userModel, response) {
+					// if(response.responseJSON.code == 202) {
+					// 	error.username = 'Username ' + username + ' has already been taken';
+					// } else if(response.responseJSON.code == 203) {
+					// 	error.email = 'The email address ' + email + ' has already been taken';
+					// }
+					self.setState({data: error});
+				}
+			})
+		}
 	},
 	uploadAvatar: function() {
 		var self = this;

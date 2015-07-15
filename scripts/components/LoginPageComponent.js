@@ -1,5 +1,6 @@
 var React = require('react');
 var validator = require('validator');
+var ChildModel = require('../models/ChildModel');
 
 module.exports = React.createClass({
 	getInitialState: function() {
@@ -88,7 +89,12 @@ module.exports = React.createClass({
 			password: this.refs.password.getDOMNode().value
 		}, {
 			success: function(userModel) {
-				app.navigate('diary', {trigger: true}); 
+				var child = new ChildModel({
+					userId: userModel.username
+				});
+				child.fetch();
+
+				app.navigate('diary/'+userModel.id, {trigger: true}); 
 			},
 			error: function(userModel, response) {
 				self.setState({

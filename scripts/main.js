@@ -10,19 +10,37 @@ var ChildInfoPageComponent = require('./components/ChildInfoPageComponent');
 var DiaryPageComponent = require('./components/DiaryPageComponent');
 var BasicComponent = require('./components/BasicComponent');
 var NavigationComponent = require('./components/NavigationComponent');
+var Calendar = require('./components/CalendarComponent');
 
 var UserModel = require('./models/UserModel');
 var ChildModel = require('./models/ChildModel');
+var ChildrenCollection = require('./collections/ChildrenCollection');
 
 var user = new UserModel();
-var child = new ChildModel();
+
+var children = new ChildrenCollection();
+	
+
+function fetchChild(userId) {
+	var q = {};
+
+	if(userId) {
+		q.userId = userId;
+	}
+	children.fetch({
+		query: q,
+		success: function() {
+			React.render(<DiaryPageComponent app={app} user={user} userId={userId} children1={children} />, container);
+		}
+	})
+};
 
 var App = Backbone.Router.extend({
 	routes: {
 		'': 'welcome',
 		'login': 'login',
 		'childInfo': 'childInfo',
-		'diary': 'diary',
+		'diary/:userId': 'diary',
 		'gallery': 'gallery',
 		'health': 'health',
 		'growth': 'growth',
@@ -42,17 +60,12 @@ var App = Backbone.Router.extend({
 	},
 	childInfo: function () {
 		React.render(
-			<ChildInfoPageComponent child={child} user={user} app={app} />,
+			<ChildInfoPageComponent user={user} app={app} />,
 			container
 		)
 	},
-	diary: function () {
-		React.render(
-			<DiaryPageComponent user={user} app={app} />,
-			container
-			// <BasicComponent user={user} app={app} />,
-			// container
-		)
+	diary: function (userId) {
+		fetchChild(userId);
 	},
 	gallery: function () {
 		React.render(

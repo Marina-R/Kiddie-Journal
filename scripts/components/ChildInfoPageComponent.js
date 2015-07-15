@@ -6,7 +6,6 @@ module.exports = React.createClass({
 	componentWillMount: function() {
 		var users = new UsersCollection();
 		users.fetch();
-		console.log(users);
 	},
 	getInitialState: function() {
 		return { 
@@ -156,9 +155,10 @@ module.exports = React.createClass({
 	gotoDiary: function(e) {
 		e.preventDefault();
 		var self = this;
-		
-		var newChild = {
-			userId: self.props.user.attributes.username, 
+		var app = this.props.app;
+	
+		var newChild = new ChildModel({
+			userId: self.props.user.id, 
 			name: self.refs.childName.getDOMNode().value,
 			nickname: self.refs.nickname.getDOMNode().value,
 			gender: self.refs.gender.getDOMNode().value,
@@ -166,25 +166,25 @@ module.exports = React.createClass({
 			TOB: self.refs.tob.getDOMNode().value,
 			eyeColor: self.refs.eyeColor.getDOMNode().value,
 			avatarUrl: self.state.avatarUrl
-		};
-		console.log(self.props.user.attributes.username)
+		});
 		
 		var error = {};
 
-		if(!newChild.name) {
+		if(!newChild.attributes.name) {
 			error.name = 'Please enter your child\'s name';
-		} else if(newChild.gender.length < 1) {
+		} else if(newChild.attributes.gender.length < 1) {
 			error.gender = 'Please choose the gender';
-		} else if(!newChild.DOB) {
+		} else if(!newChild.attributes.DOB) {
 			error.dob = 'Please enter your chaild\'s date of birth';
 		}  
 
 		this.setState({data: error});
 
 		if(!this.hasError(error)){
-			this.props.child.save(newChild, {
+			newChild.save(null, {
 				success: function(userModel) {
-					self.props.app.navigate('diary', {trigger: true});
+					
+					app.navigate('diary/'+self.props.user.id, {trigger: true});
 				},
 				error: function(userModel, response) {
 					self.setState({data: error});

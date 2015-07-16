@@ -1,104 +1,51 @@
-var React = require('react');
-var parseSettings = require('./config/parse.js');
-var Backbone = require('backparse')(parseSettings);
-var container = document.getElementById('container');
-filepicker.setKey('AeK0dNOzoQx2TdjfEqKrOz');
+var watchify = require('watchify');
+var browserify = require('browserify');
+var gulp = require('gulp');
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
+var gutil = require('gulp-util');
+var sourcemaps = require('gulp-sourcemaps');
+var assign = require('lodash.assign');
+var babelify = require('babelify');
+var webserver = require('gulp-webserver');
 
-var WelcomePageComponent = require('./components/WelcomePageComponent');
-var LoginPageComponent = require('./components/LoginPageComponent');
-var ChildInfoPageComponent = require('./components/ChildInfoPageComponent');
-var DiaryPageComponent = require('./components/DiaryPageComponent');
-var BasicComponent = require('./components/BasicComponent');
-var NavigationComponent = require('./components/NavigationComponent');
-var Calendar = require('./components/CalendarComponent');
-var HealthPageComponent = require('./components/HealthPageComponent');
-
-var UserModel = require('./models/UserModel');
-var ChildModel = require('./models/ChildModel');
-var ChildrenCollection = require('./collections/ChildrenCollection');
-
-var user = new UserModel();
-var children = new ChildrenCollection();	
-
-function fetchChild(userId) {
-	var q = {};
-
-	if(userId) {
-		q.userId = userId;
-	}
-	children.fetch({
-		query: q,
-		success: function() {
-			React.render(<DiaryPageComponent app={app} user={user} userId={userId} children1={children} />, container);
-		}
-	})
+// add custom browserify options here
+var customOpts = {
+	entries: ['./scripts/main.js'],
+	debug: true
 };
+var opts = assign({}, watchify.args, customOpts);
+var b = watchify(browserify(opts).transform(babelify));
 
-var App = Backbone.Router.extend({
-	routes: {
-		'': 'welcome',
-		'login': 'login',
-		'childInfo': 'childInfo',
-		'diary/:userId': 'diary',
-		'gallery': 'gallery',
-		'health': 'health',
-		'growth': 'growth',
-		'profile': 'profile'
-	},
-	welcome: function () {
-		React.render(
-			<WelcomePageComponent user={user} app={app} />,
-			container
-		)
-	},
-	login: function () {
-		React.render(
-			<LoginPageComponent user={user} app={app} />,
-			container
-		)
-	},
-	childInfo: function () {
-		React.render(
-			<ChildInfoPageComponent user={user} app={app} />,
-			container
-		)
-	},
-	diary: function (userId) {
-		fetchChild(userId);
-	},
-	gallery: function () {
-		React.render(
-			// <DiaryPageComponent app={app} />,
-			// container
-			<BasicComponent user={user} app={app} />,
-			container
-		)
-	},
-	health: function () {
-		// React.render(
-		// 	// <DiaryPageComponent app={app} />,
-		// 	// container
-		// 	// <BasicComponent user={user} app={app} />,
-		// 	// container
-		// )
-	},
-	growth: function () {
-		React.render(
-			// <DiaryPageComponent app={app} />,
-			// container
-			<BasicComponent user={user} app={app} />,
-			container
-		)
-	},
-	profile: function () {
-		React.render(
-			// <DiaryPageComponent app={app} />,
-			// container
-			<BasicComponent user={user} app={app} />,
-			container
-		)
-	}
+gulp.task('js', bundle); // so you can run `gulp js` to build the file
+b.on('update', bundle); // on any dep update, runs the bundler
+b.on('log', gutil.log); // output build logs to terminal
+
+gulp.task('webserver', function() {
+	gulp.src('./')
+	.pipe(webserver({
+		fallback:   'index.html',
+		livereload: true,
+		directoryListing: {
+			enable: false,
+			path: './'
+		},
+		open: true
+	}));
 });
 
-var app = new App();
-Backbone.history.start();
+gulp.task('serve', ['js', 'webserver']);
+
+function bundle() {
+	return b.bundle()
+	// log errors if they happen
+	.on('error', gutil.log.bind(gutil, 'Browserify Error'))
+	.pipe(source('all.js'))
+	// optional, remove if you don't need to buffer file contents
+	.pipe(buffer())
+	// optional, remove if you dont want sourcemaps
+	.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+	// Add transformation tasks to the pipeline here.
+	.pipe(sourcemaps.write('./')) // writes .map file
+	.pipe(gulp.dest('./dist'));
+}

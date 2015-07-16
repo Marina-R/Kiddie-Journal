@@ -5,10 +5,12 @@ var moment= require('moment');
 var $ = require('jquery');
 
 module.exports = React.createClass({
-	getInitialState: function() {
-		this.props.posts.on('change', function() {
+	componentDidMount: function() {
+		this.state.posts.on('change', function() {
 			this.forceUpdate();
 		}, this);
+	},
+	getInitialState: function() {
 		return {posts: this.props.posts}
 	},
 	render: function() {
@@ -107,15 +109,22 @@ module.exports = React.createClass({
 		);
 	},
 	removePost: function(index) {
+
 		var self = this;
-		var posts = self.state.posts.filter(function(item, i) {
-			return index == i;
-		}); 
-		self.setState({posts: posts}, function() {
-			if(posts.length === 1) {
-				posts[0].destroy({});
-				this.forceUpdate();
-			}
-		});
+		var post = this.state.posts.at(index);
+
+		this.state.posts.remove(post);
+		post.destroy();
+		self.forceUpdate();
+
+		// var posts = self.state.posts.filter(function(item, i) {
+		// 	return index == i;
+		// }); 
+		// self.setState({posts: posts}, function() {
+		// 	if(posts.length === 1) {
+		// 		posts[0].destroy({});
+		// 		self.forceUpdate();
+		// 	}
+		// });
 	}
 });

@@ -1,5 +1,6 @@
 var React = require('react');
 var DiaryPostModel = require('../models/DiaryPostModel');
+var Backbone = require('backparse');
 
 module.exports = React.createClass({
 	getInitialState: function() {
@@ -48,17 +49,18 @@ module.exports = React.createClass({
 	},
 	savePost: function(e) {
 		e.preventDefault();
+		console.log(this.props.posts)
+
 		var self = this;
 		var diaryPost = new DiaryPostModel({
 			userId: self.props.user.id,
 			title: self.refs.title.getDOMNode().value,
 			body: tinyMCE.activeEditor.getContent()
 		});	
-
-		console.log(tinyMCE.activeEditor.getContent());
+		console.log(diaryPost)
 
 		diaryPost.save();
+		this.props.posts.add();
 		this.props.close();
-		self.forceUpdate();
 	},
 });

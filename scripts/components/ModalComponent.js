@@ -13,6 +13,7 @@ module.exports = React.createClass({
 		this.setState({showModal: false});
 	},
 	render: function() {
+		console.log(this.props.posts)
 		return(
 			<div >
 				<button style={{float:'right', marginRight:'15px'}} onClick={this.openModal} className='btn btn-default'>
@@ -22,7 +23,7 @@ module.exports = React.createClass({
 					isOpen={this.state.showModal}
 					onRequestClose={this.closeModal}
 				>
-					<TinymceComponent user={this.props.user} close={this.closeModal} posts={this.state.posts} />	
+					<TinymceComponent user={this.props.user} close={this.closeModal} posts={this.props.posts} />	
 					<button style={{margin: '5px'}} className="btn btn-default" type='button' onClick={this.closeModal}>Cancel</button>		
 				</Modal>
 			</div>

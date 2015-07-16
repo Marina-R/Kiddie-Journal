@@ -11,15 +11,14 @@ var DiaryPageComponent = require('./components/DiaryPageComponent');
 var BasicComponent = require('./components/BasicComponent');
 var NavigationComponent = require('./components/NavigationComponent');
 var Calendar = require('./components/CalendarComponent');
+var HealthPageComponent = require('./components/HealthPageComponent');
 
 var UserModel = require('./models/UserModel');
 var ChildModel = require('./models/ChildModel');
 var ChildrenCollection = require('./collections/ChildrenCollection');
 
 var user = new UserModel();
-
-var children = new ChildrenCollection();
-	
+var children = new ChildrenCollection();	
 
 function fetchChild(userId) {
 	var q = {};
@@ -76,12 +75,12 @@ var App = Backbone.Router.extend({
 		)
 	},
 	health: function () {
-		React.render(
-			// <DiaryPageComponent app={app} />,
-			// container
-			<BasicComponent user={user} app={app} />,
-			container
-		)
+		// React.render(
+		// 	// <DiaryPageComponent app={app} />,
+		// 	// container
+		// 	// <BasicComponent user={user} app={app} />,
+		// 	// container
+		// )
 	},
 	growth: function () {
 		React.render(

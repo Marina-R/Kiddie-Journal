@@ -12,6 +12,14 @@ Modal.setAppElement(container);
 Modal.injectCSS();
 
 module.exports = React.createClass({
+	componentWillMount: function() {
+		this.state.posts.on('change', function() {
+			this.forceUpdate();
+		}, this);
+		this.state.posts.on('add', function() {
+			this.forceUpdate();
+		}, this);
+	},	
 	getInitialState: function() {
 		var DiaryPosts = new DiaryPostsCollection();
 		var self = this;
@@ -23,18 +31,15 @@ module.exports = React.createClass({
 			query: {userId: this.props.user.id},
 			success: function(posts) {
 				self.setState({posts: posts.models});
-				self.forceUpdate();
 			}
 		});
+		DiaryPosts.on('change', function() {
+			self.forceUpdate();
+		})
 		return {
 			child: child,
 			posts: DiaryPosts
 		};
-	},	
-	componentWillMount: function() {
-		this.state.posts.on('change', function() {
-			this.forceUpdate();
-		}, this);
 	},	
 	render: function() {
 		return(

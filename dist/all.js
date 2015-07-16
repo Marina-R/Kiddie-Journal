@@ -60117,7 +60117,7 @@ module.exports = Backbone.Collection.extend({
 	parseClassName: 'Child'
 });
 
-},{"../config/parse":280,"../models/ChildModel":282,"backparse":3}],269:[function(require,module,exports){
+},{"../config/parse":281,"../models/ChildModel":283,"backparse":3}],269:[function(require,module,exports){
 'use strict';
 
 var parseSettings = require('../config/parse.js');
@@ -60129,7 +60129,7 @@ module.exports = Backbone.Collection.extend({
 	parseClassName: 'Diary'
 });
 
-},{"../config/parse.js":280,"../models/DiaryPostModel":283,"backparse":3}],270:[function(require,module,exports){
+},{"../config/parse.js":281,"../models/DiaryPostModel":284,"backparse":3}],270:[function(require,module,exports){
 'use strict';
 
 var parseSettings = require('../config/parse');
@@ -60141,7 +60141,7 @@ module.exports = Backbone.Collection.extend({
 	parseClassName: '_User'
 });
 
-},{"../config/parse":280,"../models/UserModel":284,"backparse":3}],271:[function(require,module,exports){
+},{"../config/parse":281,"../models/UserModel":285,"backparse":3}],271:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -60153,10 +60153,12 @@ var $ = require('jquery');
 module.exports = React.createClass({
 	displayName: 'exports',
 
-	getInitialState: function getInitialState() {
-		this.props.posts.on('change', function () {
+	componentDidMount: function componentDidMount() {
+		this.state.posts.on('change', function () {
 			this.forceUpdate();
 		}, this);
+	},
+	getInitialState: function getInitialState() {
 		return { posts: this.props.posts };
 	},
 	render: function render() {
@@ -60328,16 +60330,23 @@ module.exports = React.createClass({
 		);
 	},
 	removePost: function removePost(index) {
+
 		var self = this;
-		var posts = self.state.posts.filter(function (item, i) {
-			return index == i;
-		});
-		self.setState({ posts: posts }, function () {
-			if (posts.length === 1) {
-				posts[0].destroy({});
-				this.forceUpdate();
-			}
-		});
+		var post = this.state.posts.at(index);
+
+		this.state.posts.remove(post);
+		post.destroy();
+		self.forceUpdate();
+
+		// var posts = self.state.posts.filter(function(item, i) {
+		// 	return index == i;
+		// });
+		// self.setState({posts: posts}, function() {
+		// 	if(posts.length === 1) {
+		// 		posts[0].destroy({});
+		// 		self.forceUpdate();
+		// 	}
+		// });
 	}
 });
 
@@ -60732,7 +60741,7 @@ module.exports = React.createClass({
 	}
 });
 
-},{"../collections/UsersCollection":270,"../models/ChildModel":282,"react":266}],274:[function(require,module,exports){
+},{"../collections/UsersCollection":270,"../models/ChildModel":283,"react":266}],274:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -60751,6 +60760,14 @@ Modal.injectCSS();
 module.exports = React.createClass({
 	displayName: 'exports',
 
+	componentWillMount: function componentWillMount() {
+		this.state.posts.on('change', function () {
+			this.forceUpdate();
+		}, this);
+		this.state.posts.on('add', function () {
+			this.forceUpdate();
+		}, this);
+	},
 	getInitialState: function getInitialState() {
 		var DiaryPosts = new DiaryPostsCollection();
 		var self = this;
@@ -60762,18 +60779,15 @@ module.exports = React.createClass({
 			query: { userId: this.props.user.id },
 			success: function success(posts) {
 				self.setState({ posts: posts.models });
-				self.forceUpdate();
 			}
+		});
+		DiaryPosts.on('change', function () {
+			self.forceUpdate();
 		});
 		return {
 			child: child,
 			posts: DiaryPosts
 		};
-	},
-	componentWillMount: function componentWillMount() {
-		this.state.posts.on('change', function () {
-			this.forceUpdate();
-		}, this);
 	},
 	render: function render() {
 		return React.createElement(
@@ -60794,7 +60808,10 @@ module.exports = React.createClass({
 	}
 });
 
-},{"../collections/DiaryPostsCollection":269,"../models/ChildModel":282,"../models/UserModel":284,"./BasicComponent":271,"./CalendarComponent":272,"./ModalComponent":276,"./NavigationComponent":277,"react":266,"react-modal":111}],275:[function(require,module,exports){
+},{"../collections/DiaryPostsCollection":269,"../models/ChildModel":283,"../models/UserModel":285,"./BasicComponent":271,"./CalendarComponent":272,"./ModalComponent":277,"./NavigationComponent":278,"react":266,"react-modal":111}],275:[function(require,module,exports){
+"use strict";
+
+},{}],276:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -60941,7 +60958,7 @@ module.exports = React.createClass({
 	}
 });
 
-},{"../models/ChildModel":282,"react":266,"validator":267}],276:[function(require,module,exports){
+},{"../models/ChildModel":283,"react":266,"validator":267}],277:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -60961,6 +60978,7 @@ module.exports = React.createClass({
 		this.setState({ showModal: false });
 	},
 	render: function render() {
+		console.log(this.props.posts);
 		return React.createElement(
 			'div',
 			null,
@@ -60976,7 +60994,7 @@ module.exports = React.createClass({
 					isOpen: this.state.showModal,
 					onRequestClose: this.closeModal
 				},
-				React.createElement(TinymceComponent, { user: this.props.user, close: this.closeModal, posts: this.state.posts }),
+				React.createElement(TinymceComponent, { user: this.props.user, close: this.closeModal, posts: this.props.posts }),
 				React.createElement(
 					'button',
 					{ style: { margin: '5px' }, className: 'btn btn-default', type: 'button', onClick: this.closeModal },
@@ -60987,7 +61005,7 @@ module.exports = React.createClass({
 	}
 });
 
-},{"./TinymceComponent":278,"react":266,"react-modal":111}],277:[function(require,module,exports){
+},{"./TinymceComponent":279,"react":266,"react-modal":111}],278:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -61100,11 +61118,12 @@ module.exports = React.createClass({
 	}
 });
 
-},{"bootstrap":4,"jquery":19,"react":266}],278:[function(require,module,exports){
+},{"bootstrap":4,"jquery":19,"react":266}],279:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
 var DiaryPostModel = require('../models/DiaryPostModel');
+var Backbone = require('backparse');
 
 module.exports = React.createClass({
 	displayName: 'exports',
@@ -61147,22 +61166,23 @@ module.exports = React.createClass({
 	},
 	savePost: function savePost(e) {
 		e.preventDefault();
+		console.log(this.props.posts);
+
 		var self = this;
 		var diaryPost = new DiaryPostModel({
 			userId: self.props.user.id,
 			title: self.refs.title.getDOMNode().value,
 			body: tinyMCE.activeEditor.getContent()
 		});
-
-		console.log(tinyMCE.activeEditor.getContent());
+		console.log(diaryPost);
 
 		diaryPost.save();
+		this.props.posts.add();
 		this.props.close();
-		self.forceUpdate();
 	}
 });
 
-},{"../models/DiaryPostModel":283,"react":266}],279:[function(require,module,exports){
+},{"../models/DiaryPostModel":284,"backparse":3,"react":266}],280:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -61356,7 +61376,7 @@ module.exports = React.createClass({
 	}
 });
 
-},{"react":266,"validator":267}],280:[function(require,module,exports){
+},{"react":266,"validator":267}],281:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -61365,7 +61385,7 @@ module.exports = {
 	apiVersion: 1
 };
 
-},{}],281:[function(require,module,exports){
+},{}],282:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -61381,13 +61401,13 @@ var DiaryPageComponent = require('./components/DiaryPageComponent');
 var BasicComponent = require('./components/BasicComponent');
 var NavigationComponent = require('./components/NavigationComponent');
 var Calendar = require('./components/CalendarComponent');
+var HealthPageComponent = require('./components/HealthPageComponent');
 
 var UserModel = require('./models/UserModel');
 var ChildModel = require('./models/ChildModel');
 var ChildrenCollection = require('./collections/ChildrenCollection');
 
 var user = new UserModel();
-
 var children = new ChildrenCollection();
 
 function fetchChild(userId) {
@@ -61433,12 +61453,7 @@ var App = Backbone.Router.extend({
 		// container
 		React.createElement(BasicComponent, { user: user, app: app }), container);
 	},
-	health: function health() {
-		React.render(
-		// <DiaryPageComponent app={app} />,
-		// container
-		React.createElement(BasicComponent, { user: user, app: app }), container);
-	},
+	health: function health() {},
 	growth: function growth() {
 		React.render(
 		// <DiaryPageComponent app={app} />,
@@ -61456,7 +61471,14 @@ var App = Backbone.Router.extend({
 var app = new App();
 Backbone.history.start();
 
-},{"./collections/ChildrenCollection":268,"./components/BasicComponent":271,"./components/CalendarComponent":272,"./components/ChildInfoPageComponent":273,"./components/DiaryPageComponent":274,"./components/LoginPageComponent":275,"./components/NavigationComponent":277,"./components/WelcomePageComponent":279,"./config/parse.js":280,"./models/ChildModel":282,"./models/UserModel":284,"backparse":3,"react":266}],282:[function(require,module,exports){
+// React.render(
+// 	// <DiaryPageComponent app={app} />,
+// 	// container
+// 	// <BasicComponent user={user} app={app} />,
+// 	// container
+// )
+
+},{"./collections/ChildrenCollection":268,"./components/BasicComponent":271,"./components/CalendarComponent":272,"./components/ChildInfoPageComponent":273,"./components/DiaryPageComponent":274,"./components/HealthPageComponent":275,"./components/LoginPageComponent":276,"./components/NavigationComponent":278,"./components/WelcomePageComponent":280,"./config/parse.js":281,"./models/ChildModel":283,"./models/UserModel":285,"backparse":3,"react":266}],283:[function(require,module,exports){
 'use strict';
 
 var parseSettings = require('../config/parse.js');
@@ -61478,7 +61500,7 @@ module.exports = Backbone.Model.extend({
 	idAttribute: 'objectId'
 });
 
-},{"../config/parse.js":280,"backparse":3}],283:[function(require,module,exports){
+},{"../config/parse.js":281,"backparse":3}],284:[function(require,module,exports){
 'use strict';
 
 var parseSettings = require('../config/parse.js');
@@ -61495,7 +61517,7 @@ module.exports = Backbone.Model.extend({
 	idAttribute: 'objectId'
 });
 
-},{"../config/parse.js":280,"backparse":3}],284:[function(require,module,exports){
+},{"../config/parse.js":281,"backparse":3}],285:[function(require,module,exports){
 'use strict';
 
 var parseSettings = require('../config/parse.js');
@@ -61513,7 +61535,7 @@ module.exports = Backbone.Model.extend({
 	idAttribute: 'objectId'
 });
 
-},{"../config/parse.js":280,"backparse":3}]},{},[281])
+},{"../config/parse.js":281,"backparse":3}]},{},[282])
 
 
 //# sourceMappingURL=all.js.map

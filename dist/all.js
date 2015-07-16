@@ -60337,16 +60337,6 @@ module.exports = React.createClass({
 		this.state.posts.remove(post);
 		post.destroy();
 		self.forceUpdate();
-
-		// var posts = self.state.posts.filter(function(item, i) {
-		// 	return index == i;
-		// });
-		// self.setState({posts: posts}, function() {
-		// 	if(posts.length === 1) {
-		// 		posts[0].destroy({});
-		// 		self.forceUpdate();
-		// 	}
-		// });
 	}
 });
 
@@ -60968,6 +60958,11 @@ var TinymceComponent = require('./TinymceComponent');
 module.exports = React.createClass({
 	displayName: 'exports',
 
+	componentDidMount: function componentDidMount() {
+		this.props.posts.on('change', function () {
+			this.forceUpdate();
+		}, this);
+	},
 	getInitialState: function getInitialState() {
 		return { showModal: false };
 	},
@@ -60978,7 +60973,6 @@ module.exports = React.createClass({
 		this.setState({ showModal: false });
 	},
 	render: function render() {
-		console.log(this.props.posts);
 		return React.createElement(
 			'div',
 			null,
@@ -61174,10 +61168,10 @@ module.exports = React.createClass({
 			title: self.refs.title.getDOMNode().value,
 			body: tinyMCE.activeEditor.getContent()
 		});
-		console.log(diaryPost);
 
 		diaryPost.save();
-		this.props.posts.add();
+		this.props.posts.add(diaryPost); //why not rendering
+
 		this.props.close();
 	}
 });

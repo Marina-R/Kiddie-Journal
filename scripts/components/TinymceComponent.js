@@ -57,10 +57,11 @@ module.exports = React.createClass({
 			title: self.refs.title.getDOMNode().value,
 			body: tinyMCE.activeEditor.getContent()
 		});	
-		console.log(diaryPost)
 
 		diaryPost.save();
-		this.props.posts.add();
+		this.props.posts.add(diaryPost); //why not rendering
+
+
 		this.props.close();
 	},
 });

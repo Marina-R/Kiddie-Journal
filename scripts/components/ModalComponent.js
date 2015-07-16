@@ -3,6 +3,11 @@ var Modal = require('react-modal');
 var TinymceComponent = require('./TinymceComponent');
 
 module.exports = React.createClass({
+	componentDidMount: function() {
+		this.props.posts.on('change', function() {
+			this.forceUpdate();
+		}, this);
+	},
 	getInitialState: function() {
 		return {showModal: false};
 	},
@@ -13,7 +18,6 @@ module.exports = React.createClass({
 		this.setState({showModal: false});
 	},
 	render: function() {
-		console.log(this.props.posts)
 		return(
 			<div >
 				<button style={{float:'right', marginRight:'15px'}} onClick={this.openModal} className='btn btn-default'>

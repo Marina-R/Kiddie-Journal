@@ -117,14 +117,5 @@ module.exports = React.createClass({
 		post.destroy();
 		self.forceUpdate();
 
-		// var posts = self.state.posts.filter(function(item, i) {
-		// 	return index == i;
-		// }); 
-		// self.setState({posts: posts}, function() {
-		// 	if(posts.length === 1) {
-		// 		posts[0].destroy({});
-		// 		self.forceUpdate();
-		// 	}
-		// });
 	}
 });

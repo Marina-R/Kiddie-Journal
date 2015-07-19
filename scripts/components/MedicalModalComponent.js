@@ -1,6 +1,6 @@
 var React = require('react');
 var Modal = require('react-modal');
-var TinymceComponent = require('./TinymceComponent');
+var TinymceMedicalComponent = require('./TinymceMedicalComponent');
 
 module.exports = React.createClass({
 	getInitialState: function() {
@@ -22,7 +22,7 @@ module.exports = React.createClass({
 					isOpen={this.state.showModal}
 					onRequestClose={this.closeModal}
 				>
-					<TinymceComponent user={this.props.user} close={this.closeModal} posts={this.props.posts} category={this.props.category} />	
+					<TinymceMedicalComponent user={this.props.user} close={this.closeModal} posts={this.props.posts} />	
 					<button style={{margin: '5px'}} className="btn btn-default" type='button' onClick={this.closeModal}>Cancel</button>		
 				</Modal>
 			</div>

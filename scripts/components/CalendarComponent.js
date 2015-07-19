@@ -17,6 +17,25 @@ module.exports = React.createClass({
 		};
 	},
 	handleEvent: function (event, picker) {
+		var self = this;
+		this.props.posts.fetch({
+			query: {
+				userId: this.props.user.id, 
+				createdAt: {
+					$gte: {
+						'__type':'Date',
+						'iso': moment(this.state.startDate).format() 
+					},
+					$lte: {
+						'__type':'Date',
+						'iso': moment(this.state.endDate).format() 
+					}
+				}
+			},
+			success: function(posts) {
+				self.setState({posts: posts});
+			}
+		});
 		this.setState({
 			startDate: picker.startDate,
 			endDate: picker.endDate

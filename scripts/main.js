@@ -10,12 +10,18 @@ var ChildInfoPageComponent = require('./components/ChildInfoPageComponent');
 var DiaryPageComponent = require('./components/DiaryPageComponent');
 var BasicComponent = require('./components/BasicComponent');
 var NavigationComponent = require('./components/NavigationComponent');
-var Calendar = require('./components/CalendarComponent');
+var CalendarComponent = require('./components/CalendarComponent');
+var ModalComponent = require('./components/ModalComponent');
 var HealthPageComponent = require('./components/HealthPageComponent');
+var GrowthPageComponent = require('./components/GrowthPageComponent');
+var MedicalModalComponent = require('./components/MedicalModalComponent');
+var PostsComponent = require('./components/PostsComponent');
+var D3 = require('./components/D3Component');
 
 var UserModel = require('./models/UserModel');
 var ChildModel = require('./models/ChildModel');
 var ChildrenCollection = require('./collections/ChildrenCollection');
+var HealthPosts = require('./collections/HealthPostsCollection');
 
 var user = new UserModel();
 var children = new ChildrenCollection();	
@@ -34,16 +40,34 @@ function fetchChild(userId) {
 	})
 };
 
+function fetchChildForGrowth(userId) {
+	var q = {};
+
+	if(userId) {
+		q.userId = userId;
+	}
+	children.fetch({
+		query: q,
+		success: function() {
+			React.render(
+				<GrowthPageComponent user={user} app={app} userId={userId} children1={children}>
+					
+				</GrowthPageComponent>,
+				container
+			);
+		}
+	})
+};
 var App = Backbone.Router.extend({
 	routes: {
 		'': 'welcome',
 		'login': 'login',
 		'childInfo': 'childInfo',
 		'diary/:userId': 'diary',
-		'gallery': 'gallery',
-		'health': 'health',
-		'growth': 'growth',
-		'profile': 'profile'
+		'gallery/:userId': 'gallery',
+		'health/:userId': 'health',
+		'growth/:userId': 'growth',
+		'profile/:userId': 'profile'
 	},
 	welcome: function () {
 		React.render(
@@ -66,34 +90,50 @@ var App = Backbone.Router.extend({
 	diary: function (userId) {
 		fetchChild(userId);
 	},
-	gallery: function () {
+	gallery: function (userId) {
 		React.render(
-			// <DiaryPageComponent app={app} />,
-			// container
 			<BasicComponent user={user} app={app} />,
 			container
 		)
 	},
-	health: function () {
-		// React.render(
-		// 	// <DiaryPageComponent app={app} />,
-		// 	// container
-		// 	// <BasicComponent user={user} app={app} />,
-		// 	// container
-		// )
+	health: function (userId) {
+		var healthPosts = new HealthPosts(); 
+		var q={};
+
+		if(userId) {
+			q.userId = userId;
+		}
+		healthPosts.fetch({
+			query: q
+		});
+		console.log(healthPosts);
+
+		children.fetch({
+			query: q,
+			success: function() {
+				var child = children.forEach(function(child) {
+					return child;
+				});
+
+				React.render(
+					<BasicComponent user={user} app={app} >
+						<NavigationComponent app={app} user={user} child={child} />
+						<div style={{overflow: 'hidden'}}>
+							<CalendarComponent user={user} style={{marginBottom: '20px'}} posts={healthPosts} />
+							<MedicalModalComponent user={user} posts={healthPosts} />	
+						</div>
+						<PostsComponent posts={healthPosts} user={user} />
+					</ BasicComponent>,
+					container
+				)			
+			}
+		})	
 	},
-	growth: function () {
-		React.render(
-			// <DiaryPageComponent app={app} />,
-			// container
-			<BasicComponent user={user} app={app} />,
-			container
-		)
+	growth: function (userId) {
+		fetchChildForGrowth(userId)
 	},
-	profile: function () {
+	profile: function (userId) {
 		React.render(
-			// <DiaryPageComponent app={app} />,
-			// container
 			<BasicComponent user={user} app={app} />,
 			container
 		)

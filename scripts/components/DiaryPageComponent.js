@@ -1,6 +1,7 @@
 var React = require('react');
 var BasicComponent = require('./BasicComponent');
 var NavigationComponent = require('./NavigationComponent');
+var PostsComponent = require('./PostsComponent');
 var UserModel = require('../models/UserModel');
 var ChildModel = require('../models/ChildModel');
 var CalendarComponent = require('./CalendarComponent');
@@ -16,7 +17,7 @@ module.exports = React.createClass({
 		this.state.posts.on('change', function() {
 			this.forceUpdate();
 		}, this);
-		this.state.posts.on('add', function() {
+		this.state.posts.on('sync', function() {
 			this.forceUpdate();
 		}, this);
 	},	
@@ -26,11 +27,20 @@ module.exports = React.createClass({
 		var child = self.props.children1.forEach(function(child) {
 			return child;
 		});
-
 		DiaryPosts.fetch({
-			query: {userId: this.props.user.id},
+			query: {
+				// createdAt: {
+				// 	$gte: {
+				// 		'__type': 'Date', 
+				// 		'iso': '2011-08-21T18:02:52.249Z'
+				// 	}
+				// }, 
+				// order: '-createdAt',
+				userId: this.props.user.id
+				// createdAt: {order: '-createdAt'}	
+			},
 			success: function(posts) {
-				self.setState({posts: posts.models});
+				self.setState({posts: posts});
 			}
 		});
 		DiaryPosts.on('change', function() {
@@ -44,12 +54,13 @@ module.exports = React.createClass({
 	render: function() {
 		return(
 			<div>
-				<BasicComponent user={this.state.user} posts={this.state.posts} >
+				<BasicComponent user={this.props.user} app={this.props.app} >
 					<NavigationComponent app={this.props.app} user={this.props.user} child={this.state.child} />
 					<div style={{overflow: 'hidden'}}>
-						<CalendarComponent posts={this.state.posts} style={{marginBottom: '20px'}} />
+						<CalendarComponent user={this.props.user} posts={this.state.posts} style={{marginBottom: '20px'}} />
 						<ModalComponent user={this.props.user} posts={this.state.posts} />	
 					</div>		
+					<PostsComponent posts={this.state.posts} user={this.props.user} />
 				</BasicComponent>
 			</div>
 		);

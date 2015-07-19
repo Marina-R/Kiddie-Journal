@@ -1,5 +1,5 @@
 var React = require('react');
-var DiaryPostModel = require('../models/DiaryPostModel');
+var HealthPostModel = require('../models/HealthPostModel');
 var Backbone = require('backparse');
 
 module.exports = React.createClass({
@@ -42,7 +42,15 @@ module.exports = React.createClass({
 		return (
 			<form method="post" onSubmit={this.savePost}>
 				<input style={{marginBottom: '10px'}} className="form-control" type="text" ref='title' placeholder='Title' />
-				{this.props.category}
+				<select ref='category'>
+					<option value='' defaultValue>Choose the category...</option>
+					<option value='dental'>Dental</option>
+					<option value='doctorVisit'>Doctor visit</option>
+					<option value='illness'>Illness</option>
+					<option value='immunization'>Immunization</option>
+					<option value='medicine'>Medicine</option>
+					<option value='other'>Other</option>
+				</select>
 				<textarea id={this.state.id} name="area" ref='body'></textarea>
 				<button style={{margin: '5px'}} type='button' className="btn btn-success" onClick={this.savePost}>Publish</button>
 			</form>
@@ -50,16 +58,22 @@ module.exports = React.createClass({
 	},
 	savePost: function(e) {
 		e.preventDefault();
-
 		var self = this;
-		var diaryPost = new DiaryPostModel({
-			userId: self.props.user.id,
-			title: self.refs.title.getDOMNode().value,
-			body: tinyMCE.activeEditor.getContent()
-		});	
+		if(this.refs.category.getDOMNode().value.length > 1){
+			var healthPost = new HealthPostModel({
+				userId: self.props.user.id,
+				title: self.refs.title.getDOMNode().value,
+				body: tinyMCE.activeEditor.getContent(),
+				category: this.refs.category.getDOMNode().value
+			});	
 
-		diaryPost.save();
-		this.props.posts.add(diaryPost); 
-		this.props.close();
+			healthPost.save();
+			this.props.posts.add(healthPost); 
+			this.props.close();
+		} else {
+			console.log('Please choose the category');
+			this.refs.error.getDOMNode().value = 'Please choose the category';
+
+		}
 	}
 });

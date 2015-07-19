@@ -62,7 +62,6 @@ module.exports = React.createClass({
 	},
 	hideShow: function(e) {
 		e.preventDefault();
-		console.log('test')
 		$('#wrapper').toggleClass('toggled');
 	},
 	logOut: function() {

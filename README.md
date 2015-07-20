@@ -42,9 +42,7 @@ https://ameli.mybalsamiq.com/projects/marina-final/edit
   - id
   - userId
   - title
-  - text
-  - photoUrl
-  - createdAt /date
+  - body
 
 * **Photo**
   - id
@@ -67,14 +65,12 @@ https://ameli.mybalsamiq.com/projects/marina-final/edit
   - userId
   - weight /number
   - age /number
-  - createdAt / date
 
 * **Height**
   - id
   - userId
   - height /number
   - age /number
-  - createdAt
 
 * **HealthNote**
   - id
@@ -82,7 +78,6 @@ https://ameli.mybalsamiq.com/projects/marina-final/edit
   - title
   - category
   - body
-  - createdAt
   
 ## APIs, Plugins, Libraries and Frameworks
 
@@ -92,8 +87,9 @@ FullCalendar
 
 React-Modal
 
-D3
+react-d3
 
+moment
 
 
 

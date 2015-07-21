@@ -83,7 +83,7 @@ https://ameli.mybalsamiq.com/projects/marina-final/edit
 
 TinyMCE 
 
-FullCalendar
+DateRangePicker
 
 React-Modal
 
